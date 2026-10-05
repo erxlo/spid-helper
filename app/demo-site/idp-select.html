@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scegli il gestore SPID — Agenzia delle Entrate (demo)</title>
+  <link rel="stylesheet" href="css/demo.css">
+</head>
+<body>
+  <div class="demo-banner" role="note">Sito dimostrativo — non è un servizio reale. Nessun dato viene inviato.</div>
+
+  <header class="site-header">
+    <div class="site-header__slim">
+      <div class="container">Servizi telematici — ambiente dimostrativo</div>
+    </div>
+    <div class="site-header__main">
+      <div class="container site-header__row">
+        <a class="brand" href="index.html">
+          <svg class="brand__emblem" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+            <rect x="1.5" y="1.5" width="45" height="45" rx="10" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M9 19 24 10l15 9z" fill="currentColor"/>
+            <rect x="12" y="22" width="4" height="12" fill="currentColor"/>
+            <rect x="22" y="22" width="4" height="12" fill="currentColor"/>
+            <rect x="32" y="22" width="4" height="12" fill="currentColor"/>
+            <rect x="9" y="36" width="30" height="3" fill="currentColor"/>
+          </svg>
+          <span>
+            <span class="brand__name">Agenzia delle Entrate</span>
+            <span class="brand__tag">(demo) — Area riservata</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="contenuto" class="container">
+    <div class="idp-page">
+      <nav aria-label="Percorso di navigazione">
+        <ol class="breadcrumb">
+          <li><a href="index.html">Accesso all'area riservata</a></li>
+          <li aria-current="page">Scelta del gestore SPID</li>
+        </ol>
+      </nav>
+
+      <h1>Scegli il tuo gestore di identità digitale</h1>
+      <p>
+        Seleziona il gestore presso il quale hai attivato la tua identità SPID. Verrai
+        indirizzato alla pagina di autenticazione del gestore scelto.
+      </p>
+
+      <ul class="idp-list" data-shp="select-provider-list" aria-label="Gestori di identità digitale SPID">
+        <li>
+          <button type="button" class="idp-item js-idp-unavailable" aria-describedby="idp-notice-aruba">
+            <span class="idp-badge idp-badge--c3" aria-hidden="true">AR</span>
+            <span class="idp-name">Aruba ID</span>
+          </button>
+          <p class="idp-notice" id="idp-notice-aruba" aria-live="polite"></p>
+        </li>
+        <li>
+          <button type="button" class="idp-item js-idp-unavailable" aria-describedby="idp-notice-infocert">
+            <span class="idp-badge idp-badge--square idp-badge--c5" aria-hidden="true">IC</span>
+            <span class="idp-name">InfoCert ID</span>
+          </button>
+          <p class="idp-notice" id="idp-notice-infocert" aria-live="polite"></p>
+        </li>
+        <li>
+          <button type="button" class="idp-item js-idp-unavailable" aria-describedby="idp-notice-lepida">
+            <span class="idp-badge idp-badge--c4" aria-hidden="true">LE</span>
+            <span class="idp-name">Lepida ID</span>
+          </button>
+          <p class="idp-notice" id="idp-notice-lepida" aria-live="polite"></p>
+        </li>
+        <li>
+          <button type="button" class="idp-item js-idp-unavailable" aria-describedby="idp-notice-namirial">
+            <span class="idp-badge idp-badge--square idp-badge--c6" aria-hidden="true">NA</span>
+            <span class="idp-name">Namirial ID</span>
+          </button>
+          <p class="idp-notice" id="idp-notice-namirial" aria-live="polite"></p>
+        </li>
+        <li>
+          <a class="idp-item" href="login-posteid.html">
+            <span class="idp-badge idp-badge--c1" aria-hidden="true">PI</span>
+            <span class="idp-name">Poste ID</span>
+            <svg class="idp-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <button type="button" class="idp-item js-idp-unavailable" aria-describedby="idp-notice-register">
+            <span class="idp-badge idp-badge--c8" aria-hidden="true">RE</span>
+            <span class="idp-name">Register.it SPID</span>
+          </button>
+          <p class="idp-notice" id="idp-notice-register" aria-live="polite"></p>
+        </li>
+        <li>
+          <a class="idp-item" href="login-sielteid.html">
+            <span class="idp-badge idp-badge--square idp-badge--c2" aria-hidden="true">SI</span>
+            <span class="idp-name">Sielte ID</span>
+            <svg class="idp-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </li>
+        <li>
+          <button type="button" class="idp-item js-idp-unavailable" aria-describedby="idp-notice-tim">
+            <span class="idp-badge idp-badge--c7" aria-hidden="true">TI</span>
+            <span class="idp-name">TIM ID</span>
+          </button>
+          <p class="idp-notice" id="idp-notice-tim" aria-live="polite"></p>
+        </li>
+      </ul>
+
+      <div class="idp-actions">
+        <p class="small" style="margin:0">
+          <a href="#" class="js-dummy">Non hai SPID?</a>
+          &nbsp;·&nbsp;
+          <a href="#" class="js-dummy">Serve aiuto?</a>
+        </p>
+        <a class="btn btn-secondary" href="index.html">Annulla</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Agenzia delle Entrate (demo) — pagina fittizia realizzata a scopo dimostrativo per il progetto SPID Helper.</p>
+      <p>I nomi dei gestori sono riportati solo a titolo illustrativo; i simboli mostrati sono generici e non rappresentano i marchi dei gestori.</p>
+    </div>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script src="js/idp-select.js"></script>
+</body>
+</html>

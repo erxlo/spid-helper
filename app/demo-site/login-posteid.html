@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Accedi con Poste ID — simulazione</title>
+  <link rel="stylesheet" href="css/demo.css">
+</head>
+<body class="provider-body">
+  <div class="demo-banner" role="note">Sito dimostrativo — non è un servizio reale. Nessun dato viene inviato.</div>
+
+  <header class="provider-header">
+    <div class="container">
+      <div class="provider-brand">
+        <span class="idp-badge idp-badge--c1" aria-hidden="true">PI</span>
+        <span>
+          Poste ID
+          <small>Gestore di identità digitale SPID — pagina simulata</small>
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="login-shell">
+    <div class="login-card">
+      <div class="sp-request">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M12 10.5V17M12 7v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+        <p>
+          Richiesta di accesso da <strong>Agenzia delle Entrate (demo)</strong>.<br>
+          Livello di sicurezza richiesto: SPID livello 2.
+        </p>
+      </div>
+
+      <!-- Fase 1: credenziali -->
+      <section id="step-credentials" aria-labelledby="cred-title">
+        <h1 id="cred-title">Accedi con le tue credenziali</h1>
+        <p class="muted">Inserisci il nome utente e la password della tua identità digitale.</p>
+
+        <form id="credentials-form" novalidate>
+          <div class="field">
+            <label for="username">Nome utente (indirizzo email)</label>
+            <input class="input" type="text" id="username" name="username"
+                   autocomplete="off" autocapitalize="none" spellcheck="false"
+                   aria-describedby="username-error"
+                   data-shp="posteid-username-input">
+            <p class="field-error" id="username-error" aria-live="polite"></p>
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input class="input" type="password" id="password" name="password"
+                   autocomplete="off" spellcheck="false"
+                   aria-describedby="password-error"
+                   data-shp="posteid-password-input">
+            <p class="field-error" id="password-error" aria-live="polite"></p>
+            <a href="#" class="field-help js-dummy"
+               data-demo-message="Recupero password non disponibile nel sito dimostrativo.">Password dimenticata?</a>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="submit-btn"
+                  data-shp="posteid-submit-button">Accedi</button>
+
+          <div class="form-status" id="credentials-status" role="status" aria-live="polite"></div>
+        </form>
+
+        <div class="login-links">
+          <a href="#" class="js-dummy">Non hai ancora un'identità digitale? Registrati</a>
+          <a href="idp-select.html">Annulla e torna al servizio</a>
+        </div>
+      </section>
+
+      <!-- Fase 2: autorizzazione dall'app (secondo fattore) -->
+      <section id="step-mfa" aria-labelledby="mfa-title" hidden>
+        <h1 id="mfa-title">Autorizza l'accesso dall'app</h1>
+
+        <div id="push-block" data-shp="posteid-push-notification">
+          <p>
+            Abbiamo inviato una notifica all'app sul tuo telefono. Apri la notifica e
+            autorizza l'accesso per proseguire.
+          </p>
+          <div class="phone" role="img" aria-label="Telefono simulato con una notifica di richiesta di accesso">
+            <p class="phone__time" aria-hidden="true">10:24</p>
+            <div class="phone-card" aria-hidden="true">
+              <div class="phone-card__head">
+                <span class="idp-badge idp-badge--c1">PI</span>
+                <span>App Poste ID</span>
+                <span>ora</span>
+              </div>
+              <strong>Richiesta di accesso SPID</strong>
+              Tocca per autorizzare l'accesso ad Agenzia delle Entrate (demo).
+            </div>
+          </div>
+          <p class="small muted">La richiesta resta valida per 5 minuti. Non chiudere questa pagina.</p>
+        </div>
+
+        <div id="bio-block" data-shp="posteid-biometric-confirm" hidden>
+          <p>Conferma l'accesso nell'app con l'impronta digitale o il riconoscimento del volto.</p>
+          <div class="phone">
+            <div class="phone-card app-confirm">
+              <h3>Richiesta di accesso</h3>
+              <p>Agenzia delle Entrate (demo)<br>SPID livello 2</p>
+              <svg class="app-confirm__icon" viewBox="0 0 72 72" aria-hidden="true" focusable="false">
+                <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+                  <path d="M20 26a18 18 0 0 1 32 0"/>
+                  <path d="M16 38c0-11 9-20 20-20s20 9 20 20"/>
+                  <path d="M24 40c0-7 5-12 12-12s12 5 12 12c0 6-1 11-3 15"/>
+                  <path d="M30 56c2-4 3-9 3-15 0-2 1-4 3-4s3 2 3 4c0 8-2 14-5 19"/>
+                  <path d="M42 58c1-3 2-6 2-10"/>
+                </g>
+              </svg>
+              <p>Usa l'impronta o il volto per autorizzare.</p>
+              <button type="button" class="btn btn-primary" id="bio-confirm-btn">Conferma</button>
+              <a href="#" class="js-dummy" data-demo-message="Autorizzazione con codice non disponibile nel sito dimostrativo.">Usa il codice Poste ID</a>
+            </div>
+          </div>
+          <div class="form-status" id="bio-status" role="status" aria-live="polite"></div>
+        </div>
+
+        <div class="demo-controls" aria-labelledby="demo-controls-title">
+          <p class="demo-controls__title" id="demo-controls-title">Controlli demo — simula il telefono</p>
+          <button type="button" class="btn btn-secondary" id="sim-open-notification">Simula: apri la notifica</button>
+          <p class="small muted" id="sim-done" hidden style="margin:0">Notifica aperta. Completa la conferma nel telefono simulato.</p>
+        </div>
+
+        <div class="login-links">
+          <a href="idp-select.html">Annulla e torna al servizio</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Pagina di accesso simulata a scopo dimostrativo. Non è la pagina del gestore e non ne riproduce il marchio.</p>
+      <p>Qualunque nome utente e password non vuoti sono accettati; nulla viene memorizzato o trasmesso.</p>
+    </div>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script src="js/login-posteid.js"></script>
+</body>
+</html>

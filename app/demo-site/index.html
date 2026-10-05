@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Accesso all'area riservata — Agenzia delle Entrate (demo)</title>
+  <link rel="stylesheet" href="css/demo.css">
+</head>
+<body>
+  <div class="demo-banner" role="note">Sito dimostrativo — non è un servizio reale. Nessun dato viene inviato.</div>
+
+  <header class="site-header">
+    <div class="site-header__slim">
+      <div class="container">Servizi telematici — ambiente dimostrativo</div>
+    </div>
+    <div class="site-header__main">
+      <div class="container site-header__row">
+        <a class="brand" href="index.html">
+          <svg class="brand__emblem" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+            <rect x="1.5" y="1.5" width="45" height="45" rx="10" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M9 19 24 10l15 9z" fill="currentColor"/>
+            <rect x="12" y="22" width="4" height="12" fill="currentColor"/>
+            <rect x="22" y="22" width="4" height="12" fill="currentColor"/>
+            <rect x="32" y="22" width="4" height="12" fill="currentColor"/>
+            <rect x="9" y="36" width="30" height="3" fill="currentColor"/>
+          </svg>
+          <span>
+            <span class="brand__name">Agenzia delle Entrate</span>
+            <span class="brand__tag">(demo) — Area riservata</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="contenuto" class="container">
+    <nav aria-label="Percorso di navigazione">
+      <ol class="breadcrumb">
+        <li><a href="#" class="js-dummy">Home</a></li>
+        <li><a href="#" class="js-dummy">Servizi</a></li>
+        <li aria-current="page">Accesso all'area riservata</li>
+      </ol>
+    </nav>
+
+    <h1>Accedi all'area riservata</h1>
+    <p>
+      Per utilizzare i servizi telematici dell'Agenzia (Cassetto fiscale, dichiarazione
+      precompilata, pagamento F24, consultazione delle comunicazioni) è necessario
+      autenticarsi con una delle credenziali di identità digitale indicate di seguito.
+    </p>
+
+    <div class="access-grid">
+      <section class="card card--accent" aria-labelledby="spid-title">
+        <h2 id="spid-title">SPID — Sistema Pubblico di Identità Digitale</h2>
+        <p>
+          Accedi con le credenziali SPID rilasciate da uno dei gestori di identità digitale
+          accreditati. Ti verrà chiesto di scegliere il tuo gestore e di completare
+          l'autenticazione sulla sua pagina.
+        </p>
+        <p>
+          <a class="btn btn-primary" href="idp-select.html" data-shp="home-spid-button">
+            <svg class="btn__icon" viewBox="0 0 28 28" aria-hidden="true" focusable="false">
+              <circle cx="14" cy="14" r="13" fill="none" stroke="currentColor" stroke-width="2"/>
+              <circle cx="14" cy="11" r="4.5" fill="currentColor"/>
+              <path d="M6.5 22.5c1.4-3.7 4.3-5.5 7.5-5.5s6.1 1.8 7.5 5.5" fill="currentColor"/>
+            </svg>
+            Entra con SPID
+          </a>
+        </p>
+        <p class="small">
+          <a href="#" class="js-dummy">Non hai SPID? Scopri come richiederlo</a>
+          &nbsp;·&nbsp;
+          <a href="#" class="js-dummy">Maggiori informazioni su SPID</a>
+        </p>
+      </section>
+
+      <section class="card card--disabled" aria-labelledby="cie-title">
+        <h2 id="cie-title">CIE — Carta d'Identità Elettronica</h2>
+        <p class="small muted">Accesso con Carta d'Identità Elettronica e codice PIN.</p>
+        <p>
+          <button type="button" class="btn btn-secondary" disabled aria-describedby="cie-na">Entra con CIE</button>
+        </p>
+        <p id="cie-na"><span class="badge">Non disponibile nella demo</span></p>
+      </section>
+
+      <section class="card card--disabled" aria-labelledby="cns-title">
+        <h2 id="cns-title">CNS — Carta Nazionale dei Servizi</h2>
+        <p class="small muted">Accesso con Carta Nazionale dei Servizi e lettore di smart card.</p>
+        <p>
+          <button type="button" class="btn btn-secondary" disabled aria-describedby="cns-na">Entra con CNS</button>
+        </p>
+        <p id="cns-na"><span class="badge">Non disponibile nella demo</span></p>
+      </section>
+    </div>
+
+    <div class="notice">
+      <p>
+        <strong>Assistenza.</strong> In caso di difficoltà nell'accesso consultare la
+        <a href="#" class="js-dummy">guida ai servizi telematici</a> oppure contattare
+        il gestore che ha rilasciato la propria identità digitale.
+      </p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Agenzia delle Entrate (demo) — pagina fittizia realizzata a scopo dimostrativo per il progetto SPID Helper.</p>
+      <p>Nessun collegamento con servizi reali. Nessun dato viene raccolto o trasmesso.</p>
+    </div>
+  </footer>
+
+  <script src="js/common.js"></script>
+</body>
+</html>

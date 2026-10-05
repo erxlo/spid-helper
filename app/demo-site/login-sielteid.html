@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Accedi con Sielte ID — simulazione</title>
+  <link rel="stylesheet" href="css/demo.css">
+</head>
+<body class="provider-body">
+  <div class="demo-banner" role="note">Sito dimostrativo — non è un servizio reale. Nessun dato viene inviato.</div>
+
+  <header class="provider-header provider-header--sielte">
+    <div class="container">
+      <div class="provider-brand">
+        <span class="idp-badge idp-badge--square idp-badge--c2" aria-hidden="true">SI</span>
+        <span>
+          Sielte ID
+          <small>Gestore di identità digitale SPID — pagina simulata</small>
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="login-shell">
+    <div class="login-card">
+      <div class="sp-request">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M12 10.5V17M12 7v.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+        <p>
+          Il servizio <strong>Agenzia delle Entrate (demo)</strong> richiede l'autenticazione
+          con SPID di livello 2.
+        </p>
+      </div>
+
+      <!-- Fase 1: credenziali -->
+      <section id="step-credentials" aria-labelledby="cred-title">
+        <h1 id="cred-title">Accesso con SPID</h1>
+        <p class="muted">Inserisci le credenziali della tua identità digitale.</p>
+
+        <form id="credentials-form" novalidate>
+          <div class="field">
+            <label for="username">Nome utente</label>
+            <input class="input" type="text" id="username" name="username"
+                   autocomplete="off" autocapitalize="none" spellcheck="false"
+                   aria-describedby="username-error"
+                   data-shp="sielteid-username-input">
+            <p class="field-error" id="username-error" aria-live="polite"></p>
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input class="input" type="password" id="password" name="password"
+                   autocomplete="off" spellcheck="false"
+                   aria-describedby="password-error"
+                   data-shp="sielteid-password-input">
+            <p class="field-error" id="password-error" aria-live="polite"></p>
+            <a href="#" class="field-help js-dummy"
+               data-demo-message="Recupero password non disponibile nel sito dimostrativo.">Password dimenticata?</a>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="submit-btn"
+                  data-shp="sielteid-submit-button">Accedi</button>
+
+          <div class="form-status" id="credentials-status" role="status" aria-live="polite"></div>
+        </form>
+
+        <div class="login-links">
+          <a href="#" class="js-dummy">Non hai un'identità Sielte ID? Richiedila</a>
+          <a href="idp-select.html">Annulla</a>
+        </div>
+      </section>
+
+      <!-- Fase 2: codice grafico da inquadrare con l'app -->
+      <section id="step-qr" aria-labelledby="qr-title" hidden>
+        <h1 id="qr-title">Autorizza l'accesso con l'app</h1>
+        <p>
+          Apri l'app Sielte ID sul tuo smartphone, seleziona la funzione di scansione e
+          inquadra il codice riportato qui sotto.
+        </p>
+        <div class="qr" id="qr-box" data-shp="sielteid-qr-code" role="img"
+             aria-label="Codice grafico di esempio, non valido e non scansionabile"></div>
+        <p class="small muted" style="text-align:center">Il codice è valido per 2 minuti.</p>
+
+        <div class="demo-controls" aria-labelledby="demo-controls-title">
+          <p class="demo-controls__title" id="demo-controls-title">Controlli demo — simula il telefono</p>
+          <button type="button" class="btn btn-secondary" id="sim-scanned">Simula: ho inquadrato il codice con l'app</button>
+        </div>
+
+        <div class="login-links">
+          <a href="idp-select.html">Annulla</a>
+        </div>
+      </section>
+
+      <!-- Fase 3: codice OTP ricevuto via SMS -->
+      <section id="step-otp" aria-labelledby="otp-title" hidden>
+        <h1 id="otp-title">Inserisci il codice di verifica</h1>
+        <p>Ti abbiamo inviato un SMS con un codice di verifica. Inseriscilo per completare l'accesso.</p>
+
+        <div class="otp-layout">
+          <div class="phone" data-shp="sielteid-otp-banner" role="img"
+               aria-label="Telefono simulato: SMS con il codice di esempio 123 456">
+            <p class="phone__time" aria-hidden="true">10:26</p>
+            <div class="phone-card" aria-hidden="true">
+              <div class="phone-card__head">
+                <span class="idp-badge idp-badge--square idp-badge--c2">SI</span>
+                <span>SMS · SielteID</span>
+                <span>ora</span>
+              </div>
+              Il tuo codice di verifica è
+              <span class="otp-code">123 456</span>.
+              Non comunicarlo a nessuno. (codice di esempio)
+            </div>
+          </div>
+
+          <form id="otp-form" novalidate>
+            <div class="field">
+              <label for="otp">Codice di verifica</label>
+              <input class="input" type="text" id="otp" name="otp"
+                     inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="7"
+                     aria-describedby="otp-error"
+                     data-shp="sielteid-otp-input">
+              <p class="field-error" id="otp-error" aria-live="polite"></p>
+              <a href="#" class="field-help" id="otp-resend">Invia di nuovo il codice</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="otp-submit-btn"
+                    data-shp="sielteid-otp-submit-button">Conferma</button>
+
+            <div class="form-status" id="otp-status" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+
+        <div class="login-links">
+          <a href="idp-select.html">Annulla</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Pagina di accesso simulata a scopo dimostrativo. Non è la pagina del gestore e non ne riproduce il marchio.</p>
+      <p>Qualunque nome utente e password non vuoti sono accettati; nulla viene memorizzato o trasmesso.</p>
+    </div>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script src="js/login-sielteid.js"></script>
+</body>
+</html>

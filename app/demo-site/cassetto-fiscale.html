@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cassetto fiscale — Agenzia delle Entrate (demo)</title>
+  <link rel="stylesheet" href="css/demo.css">
+</head>
+<body>
+  <div class="demo-banner" role="note">Sito dimostrativo — non è un servizio reale. Nessun dato viene inviato.</div>
+
+  <header class="site-header">
+    <div class="site-header__slim">
+      <div class="container">Servizi telematici — ambiente dimostrativo</div>
+    </div>
+    <div class="site-header__main">
+      <div class="container site-header__row">
+        <a class="brand" href="index.html">
+          <svg class="brand__emblem" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+            <rect x="1.5" y="1.5" width="45" height="45" rx="10" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M9 19 24 10l15 9z" fill="currentColor"/>
+            <rect x="12" y="22" width="4" height="12" fill="currentColor"/>
+            <rect x="22" y="22" width="4" height="12" fill="currentColor"/>
+            <rect x="32" y="22" width="4" height="12" fill="currentColor"/>
+            <rect x="9" y="36" width="30" height="3" fill="currentColor"/>
+          </svg>
+          <span>
+            <span class="brand__name">Agenzia delle Entrate</span>
+            <span class="brand__tag">(demo) — Area riservata</span>
+          </span>
+        </a>
+        <div class="header-user">
+          <span>Utente Demo</span>
+          <a href="index.html">Esci</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="contenuto" class="container">
+    <div class="cf-layout">
+      <nav class="cf-nav" aria-label="Sezioni del Cassetto fiscale">
+        <h2>Cassetto fiscale</h2>
+        <ul>
+          <li><a href="#dichiarazioni">Dichiarazioni</a></li>
+          <li><a href="#versamenti">Versamenti F24</a></li>
+          <li><a href="#rimborsi">Rimborsi</a></li>
+          <li><a href="#comunicazioni">Comunicazioni</a></li>
+        </ul>
+      </nav>
+
+      <section class="card" data-shp="success-landing-panel" aria-labelledby="cf-title">
+        <div class="notice notice--success">
+          <p><strong>Accesso effettuato.</strong> Autenticazione SPID completata (simulazione).</p>
+        </div>
+
+        <h1 id="cf-title">Cassetto fiscale</h1>
+        <p class="muted">
+          Consultazione delle informazioni fiscali del contribuente.
+          <span class="badge badge--sample">Dati di esempio</span>
+        </p>
+
+        <dl class="cf-user">
+          <div>
+            <dt>Contribuente</dt>
+            <dd>Utente Demo</dd>
+          </div>
+          <div>
+            <dt>Codice fiscale</dt>
+            <dd>DMOUTN00A00X000X</dd>
+          </div>
+          <div>
+            <dt>Domicilio fiscale</dt>
+            <dd>Via Esempio 0, Comune Demo</dd>
+          </div>
+        </dl>
+
+        <section class="cf-section" id="dichiarazioni" aria-labelledby="dich-title">
+          <div class="cf-section__head">
+            <h2 id="dich-title">Dichiarazioni</h2>
+            <span class="badge badge--sample">Dati di esempio</span>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="visually-hidden">Dichiarazioni presentate (dati di esempio)</caption>
+              <thead>
+                <tr><th scope="col">Modello</th><th scope="col">Periodo</th><th scope="col">Protocollo</th><th scope="col">Stato</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Modello DEMO-A</td><td>Anno di esempio 1</td><td>DEMO-0000-0001</td><td>Elaborata</td></tr>
+                <tr><td>Modello DEMO-A</td><td>Anno di esempio 2</td><td>DEMO-0000-0002</td><td>Elaborata</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="cf-section" id="versamenti" aria-labelledby="f24-title">
+          <div class="cf-section__head">
+            <h2 id="f24-title">Versamenti F24</h2>
+            <span class="badge badge--sample">Dati di esempio</span>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="visually-hidden">Versamenti F24 (dati di esempio)</caption>
+              <thead>
+                <tr><th scope="col">Data</th><th scope="col">Codice tributo</th><th scope="col">Descrizione</th><th scope="col">Importo</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>00/00/0000</td><td>0000</td><td>Versamento di esempio</td><td class="num">€ 123,45</td></tr>
+                <tr><td>00/00/0000</td><td>0000</td><td>Versamento di esempio</td><td class="num">€ 67,89</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="cf-section" id="rimborsi" aria-labelledby="rimb-title">
+          <div class="cf-section__head">
+            <h2 id="rimb-title">Rimborsi</h2>
+            <span class="badge badge--sample">Dati di esempio</span>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="visually-hidden">Rimborsi (dati di esempio)</caption>
+              <thead>
+                <tr><th scope="col">Riferimento</th><th scope="col">Tipo</th><th scope="col">Importo</th><th scope="col">Stato</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>DEMO-RIM-0001</td><td>Rimborso di esempio</td><td class="num">€ 10,00</td><td>In lavorazione</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="cf-section" id="comunicazioni" aria-labelledby="com-title">
+          <div class="cf-section__head">
+            <h2 id="com-title">Comunicazioni</h2>
+            <span class="badge badge--sample">Dati di esempio</span>
+          </div>
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="visually-hidden">Comunicazioni (dati di esempio)</caption>
+              <thead>
+                <tr><th scope="col">Data</th><th scope="col">Oggetto</th><th scope="col">Documento</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>00/00/0000</td><td>Comunicazione di esempio n. 1</td><td><a href="#" class="js-dummy">Visualizza</a></td></tr>
+                <tr><td>00/00/0000</td><td>Comunicazione di esempio n. 2</td><td><a href="#" class="js-dummy">Visualizza</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <p class="small muted" style="margin-top:2rem">
+          Tutti i dati mostrati sono fittizi e generati a scopo dimostrativo. Non corrispondono
+          ad alcuna persona reale. <a href="index.html">Esci dall'area riservata</a>
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Agenzia delle Entrate (demo) — pagina fittizia realizzata a scopo dimostrativo per il progetto SPID Helper.</p>
+      <p>Nessun collegamento con servizi reali. Nessun dato viene raccolto o trasmesso.</p>
+    </div>
+  </footer>
+
+  <script src="js/common.js"></script>
+</body>
+</html>

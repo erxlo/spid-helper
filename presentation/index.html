@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPID Helper — Educazione Digitale Inclusiva | Accenture</title>
+  <style>
+    :root {
+      --purple: #A100FF;
+      --purple-dark: #7500C0;
+      --purple-deep: #460073;
+      --black: #000000;
+      --ink: #111111;
+      --ink-2: #444444;
+      --muted: #767676;
+      --line: #e3e3e3;
+      --surface: #ffffff;
+      --surface-2: #f4f4f6;
+      --good: #008a5e;
+      --amber: #ffbf47;
+      --navy: #0b3d91;
+      --font: Graphik, "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+    body { margin: 0; font-family: var(--font); color: var(--ink); background: var(--surface); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3, h4 { margin: 0; line-height: 1.1; letter-spacing: -0.02em; }
+    p { margin: 0; }
+    a { color: inherit; }
+
+    /* ── top bar ──────────────────────────────────────────────── */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between; gap: 24px;
+      height: 64px; padding: 0 clamp(20px, 5vw, 64px);
+      background: rgba(255,255,255,.96); backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+    }
+    .wordmark { display: inline-flex; align-items: baseline; font-size: 26px; font-weight: 700; letter-spacing: -0.03em; color: var(--black); text-decoration: none; }
+    .wordmark .gt { color: var(--purple); font-weight: 800; font-size: .62em; line-height: 1; display: inline-block; margin-right: -.62em; transform: translate(.05em, -.78em); }
+    .topbar nav { display: flex; gap: 28px; font-size: 14px; font-weight: 500; }
+    .topbar nav a { text-decoration: none; color: var(--ink-2); padding: 6px 0; border-bottom: 2px solid transparent; transition: color .15s, border-color .15s; }
+    .topbar nav a:hover, .topbar nav a.active { color: var(--black); border-color: var(--purple); }
+    .progressbar { position: absolute; left: 0; bottom: -1px; height: 3px; width: 0; background: var(--purple); }
+    @media (max-width: 900px) { .topbar nav { display: none; } }
+
+    /* ── layout ───────────────────────────────────────────────── */
+    section { padding: clamp(72px, 10vw, 128px) clamp(20px, 5vw, 64px); }
+    .wrap { max-width: 1200px; margin: 0 auto; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--purple); margin-bottom: 20px; }
+    .eyebrow::before { content: ">"; font-size: 18px; letter-spacing: 0; }
+    .h2 { font-size: clamp(36px, 5vw, 64px); font-weight: 700; max-width: 18ch; }
+    .lead { font-size: clamp(18px, 1.6vw, 22px); color: var(--ink-2); max-width: 62ch; margin-top: 24px; }
+    .alt { background: var(--surface-2); }
+    .dark { background: var(--black); color: #fff; }
+    .dark .lead { color: #c8c8d0; }
+
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .ring::after { animation: none !important; }
+    }
+
+    /* ── 1. hero ──────────────────────────────────────────────── */
+    .hero { position: relative; overflow: hidden; min-height: calc(100vh - 64px); display: flex; align-items: center; background: var(--black); color: #fff; }
+    .hero::after {
+      content: ""; position: absolute; right: -12vw; top: 50%; transform: translateY(-50%);
+      width: 62vw; height: 62vw; max-width: 900px; max-height: 900px;
+      background: linear-gradient(135deg, var(--purple) 0%, var(--purple-deep) 100%);
+      clip-path: polygon(0 0, 100% 50%, 0 100%, 22% 50%);
+      opacity: .92;
+    }
+    .hero .wrap { position: relative; z-index: 1; width: 100%; }
+    .hero h1 { font-size: clamp(56px, 9vw, 128px); font-weight: 700; letter-spacing: -0.04em; }
+    .hero h1 span { color: var(--purple); }
+    .hero .claim { font-size: clamp(22px, 2.4vw, 32px); font-weight: 300; max-width: 26ch; margin-top: 28px; color: #e6e6ee; }
+    .theme-tag { display: inline-block; margin-top: 48px; padding: 18px 24px; border-left: 4px solid var(--purple); background: rgba(255,255,255,.06); max-width: 560px; }
+    .theme-tag small { display: block; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #a8a8b8; margin-bottom: 6px; }
+    .theme-tag strong { font-size: 20px; font-weight: 600; }
+    .hero-facts { display: flex; flex-wrap: wrap; gap: 40px; margin-top: 56px; }
+    .hero-facts div { font-size: 15px; color: #b8b8c8; max-width: 200px; }
+    .hero-facts b { display: block; font-size: 36px; color: #fff; font-weight: 700; letter-spacing: -0.02em; }
+    .scroll-cue { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 1; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #9a9aaa; text-decoration: none; }
+
+    /* ── 2. learner profile ───────────────────────────────────── */
+    .statement {
+      margin-top: 56px; padding: clamp(28px, 4vw, 48px); background: var(--black); color: #fff;
+      font-size: clamp(22px, 2.4vw, 32px); font-weight: 300; line-height: 1.4; position: relative;
+    }
+    .statement::before { content: ">"; position: absolute; top: -28px; left: clamp(28px, 4vw, 48px); font-size: 64px; font-weight: 800; color: var(--purple); line-height: 1; }
+    .statement b { font-weight: 600; color: #fff; box-shadow: inset 0 -0.18em 0 var(--purple); }
+    .triad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 48px; background: var(--line); border: 1px solid var(--line); }
+    .triad article { background: #fff; padding: 36px 32px; }
+    .triad .q { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--purple); }
+    .triad h3 { font-size: 26px; margin: 12px 0 16px; }
+    .triad ul { margin: 0; padding: 0; list-style: none; }
+    .triad li { position: relative; padding-left: 22px; margin-bottom: 10px; color: var(--ink-2); }
+    .triad li::before { content: ">"; position: absolute; left: 0; color: var(--purple); font-weight: 800; }
+    .quote { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); font-style: italic; color: var(--ink); }
+    .journey { display: flex; gap: 0; margin-top: 48px; counter-reset: j; }
+    .journey li { list-style: none; flex: 1; padding: 20px 18px 0; border-top: 4px solid var(--ink); position: relative; font-size: 15px; color: var(--ink-2); }
+    .journey li::before { counter-increment: j; content: "0" counter(j); display: block; font-size: 13px; font-weight: 700; color: var(--purple); margin-bottom: 6px; }
+    .journey li.risk { border-top-color: var(--purple); }
+    .journey li.risk::after { content: "punto di abbandono"; position: absolute; top: -30px; left: 18px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--purple); }
+    .journey { padding: 0; }
+    @media (max-width: 900px) { .triad { grid-template-columns: 1fr; } .journey { flex-direction: column; gap: 28px; } }
+
+    /* ── shared device mockups ────────────────────────────────── */
+    .browser { background: #fff; border: 1px solid #d6d6dc; border-radius: 12px; overflow: hidden; box-shadow: 0 24px 60px -24px rgba(20, 0, 40, .35); }
+    .browser .bar { display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; background: #ececf0; border-bottom: 1px solid #d6d6dc; }
+    .browser .bar i { width: 10px; height: 10px; border-radius: 50%; background: #c4c4cc; }
+    .browser .url { margin-left: 10px; flex: 1; height: 20px; border-radius: 10px; background: #fff; font-size: 11px; color: var(--muted); display: flex; align-items: center; padding: 0 10px; font-style: normal; }
+    .page { position: relative; height: 470px; background: #f6f8fa; font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif; }
+    .page-head { display: flex; align-items: center; gap: 10px; padding: 12px 18px; color: #fff; font-weight: 700; font-size: 15px; }
+    .page-head .logo-dot { width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,.25); display: grid; place-items: center; font-size: 12px; }
+    .page-head.poste { background: #6c7f93; }
+    .page-head.sielte { background: #7b6d8f; }
+    .page-body { padding: 18px; }
+    .page-body h4 { font-size: 17px; color: #17324d; letter-spacing: 0; margin-bottom: 8px; }
+    .page-body .sub { font-size: 12.5px; color: #5a6772; max-width: 30ch; }
+    .push { position: relative; margin-top: 16px; width: 210px; padding: 12px; background: #fff; border: 1px solid #d7dde3; border-radius: 10px; font-size: 12px; color: #17324d; }
+    .push b { display: block; font-size: 12.5px; margin-bottom: 2px; }
+    .qr-box { position: relative; margin-top: 14px; width: 132px; height: 132px; padding: 8px; background: #fff; border: 1px solid #d7dde3; border-radius: 8px; }
+    .qr-box svg { display: block; width: 100%; height: 100%; }
+    .demo-ctrl { margin-top: 14px; display: inline-block; font-size: 11px; color: #004c99; border: 1px dashed #8aa7c4; border-radius: 6px; padding: 6px 9px; background: #fff; }
+
+    /* overlay (riproduce l'aiuto reale, in scala) */
+    .ov {
+      position: absolute; right: 12px; bottom: 12px; width: 262px; padding: 14px;
+      background: #fff; color: #111; border: 3px solid var(--navy); border-radius: 12px;
+      box-shadow: 0 6px 24px rgba(0,0,0,.28);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; font-size: 13.5px; line-height: 1.45;
+    }
+    .ov .head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .ov .ic { width: 36px; height: 36px; color: var(--navy); flex: none; }
+    .ov .prog { font-size: 12.5px; font-weight: 700; color: #333; }
+    .ov h5 { margin: 0 0 6px; font-size: 16px; line-height: 1.25; font-weight: 700; }
+    .ov p { margin: 0 0 4px; }
+    .ov .hint { margin-top: 10px; padding: 8px 10px; background: #eaf2fc; border: 2px solid var(--navy); border-left-width: 6px; border-radius: 8px; }
+    .ov .hint .lbl { font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+    .ov .done { margin-top: 10px; width: 100%; min-height: 38px; border: 0; border-radius: 8px; background: var(--navy); color: #fff; font: 700 13.5px/1.2 inherit; font-family: inherit; }
+    .ring { position: absolute; inset: -7px; border: 3px solid var(--amber); border-radius: 12px; box-shadow: 0 0 0 2px var(--navy), inset 0 0 0 2px var(--navy); pointer-events: none; }
+    .ring::after { content: ""; position: absolute; inset: -4px; border: 3px solid var(--amber); border-radius: 14px; animation: pulse 1.6s ease-out infinite; }
+    @keyframes pulse { 0% { opacity: .9; transform: scale(1); } 100% { opacity: 0; transform: scale(1.1); } }
+
+    /* ── 3. adaptive evidence ─────────────────────────────────── */
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 3vw, 40px); margin-top: 56px; }
+    .col-label { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px; border-bottom: 2px solid var(--black); padding-bottom: 10px; }
+    .col-label h3 { font-size: 28px; }
+    .col-label span { font-size: 14px; color: var(--muted); }
+    .path { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 20px; }
+    .path span { font-size: 12.5px; padding: 6px 10px; border: 1px solid #cfcfd6; background: #fff; border-radius: 999px; color: var(--ink-2); }
+    .path span.same { color: var(--muted); border-style: dashed; }
+    .path span.own { border-color: var(--purple); color: var(--purple-dark); font-weight: 600; }
+    .path span.now { background: var(--purple); color: #fff; border-color: var(--purple); }
+    .diff-table { width: 100%; border-collapse: collapse; margin-top: 64px; font-size: 16px; background: #fff; }
+    .diff-table th, .diff-table td { text-align: left; padding: 16px 20px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .diff-table thead th { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid var(--black); }
+    .diff-table tbody th { font-weight: 600; width: 22%; }
+    .legend-path { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 28px; font-size: 13px; color: var(--ink-2); }
+    .legend-path i { display: inline-block; width: 22px; height: 12px; border-radius: 999px; vertical-align: -1px; margin-right: 6px; border: 1px solid #cfcfd6; }
+    .legend-path .l-same i { border-style: dashed; }
+    .legend-path .l-own i { border-color: var(--purple); }
+    .legend-path .l-now i { background: var(--purple); border-color: var(--purple); }
+    @media (max-width: 960px) { .compare { grid-template-columns: 1fr; } }
+
+    /* ── 4. block detection ───────────────────────────────────── */
+    .ba { display: grid; grid-template-columns: 1fr auto 1fr; gap: clamp(16px, 2.5vw, 32px); align-items: center; margin-top: 56px; }
+    .ba .tag { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; padding: 6px 12px; margin-bottom: 14px; }
+    .ba .tag.before { background: #2a2a34; color: #fff; }
+    .ba .tag.after { background: var(--purple); color: #fff; }
+    .ba .cap { margin-top: 14px; font-size: 15px; color: #c8c8d0; }
+    .arrow { display: grid; justify-items: center; gap: 10px; color: var(--purple); text-align: center; }
+    .arrow b { font-size: 56px; line-height: 1; font-weight: 800; }
+    .arrow span { font-size: 13px; color: #c8c8d0; max-width: 12ch; }
+    .timeline { margin-top: 64px; position: relative; height: 70px; }
+    .timeline .track { position: absolute; top: 28px; left: 0; right: 0; height: 4px; background: #33333f; }
+    .timeline .fill { position: absolute; top: 28px; left: 0; width: 72%; height: 4px; background: linear-gradient(90deg, #555566, var(--purple)); }
+    .timeline .tick { position: absolute; top: 0; transform: translateX(-50%); font-size: 13px; color: #c8c8d0; white-space: nowrap; text-align: center; }
+    .timeline .tick::after { content: ""; display: block; width: 14px; height: 14px; margin: 6px auto 0; border-radius: 50%; background: #000; border: 3px solid #777788; }
+    .timeline .tick:first-of-type { transform: none; text-align: left; }
+    .timeline .tick:first-of-type::after { margin-left: 0; }
+    .timeline .tick:last-of-type { transform: translateX(-100%); text-align: right; }
+    .timeline .tick:last-of-type::after { margin-right: 0; }
+    .ba .page { height: 580px; }
+    .timeline .tick.hot { color: #fff; font-weight: 600; }
+    .timeline .tick.hot::after { border-color: var(--purple); background: var(--purple); box-shadow: 0 0 0 6px rgba(161,0,255,.25); }
+    .rules { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-top: 56px; background: #26262f; }
+    .rules div { background: #0d0d12; padding: 26px 22px; font-size: 15px; color: #c8c8d0; }
+    .rules b { display: block; color: #fff; font-size: 18px; margin-bottom: 8px; }
+    .hint-wall { margin-top: 56px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .hint-wall figure { margin: 0; padding: 20px; border: 1px solid #2c2c38; background: #0d0d12; }
+    .hint-wall figcaption { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--purple); font-weight: 700; margin-bottom: 10px; }
+    .hint-wall p { color: #e6e6ee; font-size: 15.5px; }
+    @media (max-width: 960px) { .ba { grid-template-columns: 1fr; } .arrow b { transform: rotate(90deg); } .rules, .hint-wall { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .rules, .hint-wall { grid-template-columns: 1fr; } }
+
+    /* ── 5. learning outcome ──────────────────────────────────── */
+    .outcomes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 48px; }
+    .outcomes div { border-top: 4px solid var(--purple); padding-top: 18px; }
+    .outcomes b { display: block; font-size: 20px; margin-bottom: 6px; }
+    .outcomes p { color: var(--ink-2); font-size: 15.5px; }
+    .measure { display: grid; grid-template-columns: 400px 1fr; gap: clamp(28px, 4vw, 64px); margin-top: 80px; align-items: start; }
+    .measure h3 { font-size: 30px; margin-bottom: 14px; }
+    .measure .lead { margin-top: 0; font-size: 17px; }
+
+    /* popup replica */
+    .popup { width: 380px; max-width: 100%; background: #0a0a14; color: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 30px 70px -28px rgba(70, 0, 115, .65); font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+    .popup header { background: linear-gradient(135deg, #0e0026, #190040); border-bottom: 2px solid var(--purple); padding: 14px 16px; display: flex; gap: 12px; align-items: center; }
+    .popup .plogo { width: 36px; height: 36px; border-radius: 8px; background: var(--purple); display: grid; place-items: center; font-size: 20px; box-shadow: 0 0 16px rgba(161,0,255,.5); }
+    .popup h4 { font-size: 14px; letter-spacing: .01em; }
+    .popup header p { font-size: 10px; color: #8888aa; letter-spacing: .06em; text-transform: uppercase; margin-top: 2px; }
+    .popup .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px; }
+    .pcard { background: #111126; border: 1px solid rgba(161,0,255,.28); border-radius: 10px; padding: 13px 12px 11px; display: flex; flex-direction: column; gap: 5px; }
+    .pcard .i { font-size: 20px; line-height: 1; }
+    .pcard .l { font-size: 9px; font-weight: 700; color: #8888aa; letter-spacing: .09em; text-transform: uppercase; }
+    .pcard .v { font-size: 24px; font-weight: 800; color: var(--purple); line-height: 1; font-variant-numeric: tabular-nums; }
+    .pcard .s { font-size: 10px; color: #8888aa; line-height: 1.5; }
+    .trend { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 20px; background: rgba(0,229,160,.15); color: #00e5a0; }
+    .popup footer { border-top: 1px solid rgba(255,255,255,.06); padding: 7px 14px; display: flex; justify-content: space-between; font-size: 9px; color: #8888aa; }
+    .popup footer b { color: var(--purple); letter-spacing: .12em; text-transform: uppercase; }
+    .note { margin-top: 12px; font-size: 13px; color: var(--muted); }
+
+    /* chart */
+    .chart-card { background: #fff; border: 1px solid var(--line); padding: 24px 24px 18px; }
+    .chart-card h4 { font-size: 17px; letter-spacing: -0.01em; }
+    .chart-card .csub { font-size: 13.5px; color: var(--muted); margin-top: 4px; }
+    .chart { position: relative; margin-top: 18px; }
+    .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+    .chart .grid-l { stroke: #ececf0; stroke-width: 1; }
+    .chart .axis-t { font-size: 12px; fill: var(--muted); }
+    .chart .val-t { font-size: 13px; font-weight: 700; fill: var(--ink); }
+    .chart .bar { fill: var(--purple); }
+    .chart .hit { fill: transparent; cursor: default; }
+    .chart .hit:hover + .bar, .chart .hit:focus + .bar { fill: var(--purple-dark); }
+    .tip { position: absolute; pointer-events: none; background: var(--black); color: #fff; font-size: 12.5px; line-height: 1.45; padding: 8px 10px; white-space: nowrap; opacity: 0; transform: translate(-50%, -100%); transition: opacity .12s; }
+    .tip.on { opacity: 1; }
+    details.table-view { margin-top: 12px; font-size: 13.5px; }
+    details.table-view summary { cursor: pointer; color: var(--purple-dark); font-weight: 600; }
+    details.table-view table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    details.table-view th, details.table-view td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+
+    .verify { margin-top: 80px; }
+    .verify h3 { font-size: 30px; margin-bottom: 28px; }
+    .steps-v { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--line); border: 1px solid var(--line); counter-reset: v; }
+    .steps-v article { background: #fff; padding: 30px 28px; }
+    .steps-v article::before { counter-increment: v; content: "0" counter(v); display: block; font-size: 40px; font-weight: 700; color: var(--purple); letter-spacing: -0.03em; margin-bottom: 10px; }
+    .steps-v h4 { font-size: 19px; margin-bottom: 8px; letter-spacing: -0.01em; }
+    .steps-v p { color: var(--ink-2); font-size: 15.5px; }
+    .success { margin-top: 40px; padding: 28px 32px; background: var(--black); color: #fff; display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: center; }
+    .success b { font-size: 48px; color: var(--purple); line-height: 1; }
+    .success p { font-size: 19px; font-weight: 300; }
+    .success strong { font-weight: 600; }
+    @media (max-width: 960px) { .outcomes, .steps-v { grid-template-columns: 1fr 1fr; } .measure { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) { .outcomes, .steps-v { grid-template-columns: 1fr; } .success { grid-template-columns: 1fr; } }
+
+    /* ── footer ───────────────────────────────────────────────── */
+    .foot { background: var(--black); color: #9a9aaa; padding: 40px clamp(20px, 5vw, 64px); font-size: 13px; }
+    .foot .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; }
+    .foot .wordmark { color: #fff; font-size: 22px; }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="wordmark" href="#tema" aria-label="Accenture">accen<span class="gt" aria-hidden="true">&gt;</span>ture</a>
+  <nav aria-label="Sezioni">
+    <a href="#tema">Il tema</a>
+    <a href="#profilo">Per chi</a>
+    <a href="#adattivo">Si adatta</a>
+    <a href="#blocco">Si accorge del blocco</a>
+    <a href="#risultati">Cosa migliora</a>
+  </nav>
+  <div class="progressbar" id="progress"></div>
+</header>
+
+<main>
+
+  <!-- 1 ─ Titolo e tema ───────────────────────────────────────── -->
+  <section class="hero" id="tema">
+    <div class="wrap">
+      <p class="eyebrow">Hagenthon · Tema 03</p>
+      <h1>SPID Helper<span>.</span></h1>
+      <p class="claim">Il primo accesso SPID, fatto da soli. Un passo alla volta, con qualcuno accanto.</p>
+      <div class="theme-tag">
+        <small>Tema scelto</small>
+        <strong>Educazione Digitale Inclusiva</strong>
+        <p style="margin-top:8px;color:#c8c8d0;font-size:15px">Accompagnare chi ha poca confidenza digitale fino al Cassetto Fiscale dell'Agenzia delle Entrate, senza sostituirsi a lui.</p>
+      </div>
+      <div class="hero-facts">
+        <div><b>1</b>passaggio alla volta, in parole semplici</div>
+        <div><b>2</b>percorsi diversi: Poste ID e Sielte ID</div>
+        <div><b>0</b>dati personali inviati o salvati</div>
+      </div>
+    </div>
+    <a class="scroll-cue" href="#profilo">Scorri ↓</a>
+  </section>
+
+  <!-- 2 ─ Learner Profile Statement ───────────────────────────── -->
+  <section id="profilo">
+    <div class="wrap">
+      <p class="eyebrow reveal">Learner Profile Statement</p>
+      <h2 class="h2 reveal">Per chi lo abbiamo progettato.</h2>
+
+      <p class="statement reveal">
+        Una <b>persona di 65 anni o più</b>, con <b>poca confidenza digitale</b>,
+        che deve entrare per la <b>prima volta con SPID</b> nel Cassetto Fiscale
+        e rischia di <b>arrendersi al primo ostacolo</b>: una schermata inattesa,
+        un'attesa sul telefono, un pulsante che non trova.
+      </p>
+
+      <div class="triad reveal">
+        <article>
+          <p class="q">Chi è</p>
+          <h3>L'utente</h3>
+          <ul>
+            <li>Ha più di 65 anni.</li>
+            <li>Usa poco form, popup e app sullo smartphone.</li>
+            <li>Non sa cosa sia un "gestore di identità".</li>
+            <li>Può confondere SPID, CIE e CNS.</li>
+          </ul>
+        </article>
+        <article>
+          <p class="q">Quale difficoltà</p>
+          <h3>Il blocco</h3>
+          <ul>
+            <li>Passa dal sito al telefono e perde il filo.</li>
+            <li>Non capisce se deve aspettare o fare qualcosa.</li>
+            <li>Ha paura di sbagliare e di "rompere" qualcosa.</li>
+          </ul>
+          <p class="quote">"Ho sbagliato qualcosa? Forse è meglio lasciar perdere."</p>
+        </article>
+        <article>
+          <p class="q">In quale scenario</p>
+          <h3>Il Cassetto Fiscale</h3>
+          <ul>
+            <li>Primo accesso con SPID al sito dell'Agenzia delle Entrate.</li>
+            <li>Gestore Poste ID oppure Sielte ID.</li>
+            <li>Conferma finale sul proprio telefono.</li>
+          </ul>
+        </article>
+      </div>
+
+      <ol class="journey reveal" aria-label="Percorso dell'utente">
+        <li>Tocca <b>Entra con SPID</b> sul sito del servizio</li>
+        <li>Sceglie il proprio gestore dall'elenco</li>
+        <li>Scrive nome utente e password</li>
+        <li class="risk">Conferma sul telefono: notifica, QR code o codice</li>
+        <li>Arriva nel Cassetto Fiscale</li>
+      </ol>
+
+      <p class="lead reveal">La regola di design che ne deriva: meglio <strong>esplicito, ridondante e rassicurante</strong> che elegante ma implicito. Ogni testo ha una sola istruzione, frasi brevi, verbi diretti, nessun gergo.</p>
+    </div>
+  </section>
+
+  <!-- 3 ─ Adaptive Evidence ───────────────────────────────────── -->
+  <section class="alt" id="adattivo">
+    <div class="wrap">
+      <p class="eyebrow reveal">Adaptive Evidence</p>
+      <h2 class="h2 reveal">Stesso momento, due gestori, due guide diverse.</h2>
+      <p class="lead reveal">Poste ID e Sielte ID chiedono cose diverse proprio dove l'utente si blocca di più: la conferma sul telefono. SPID Helper riconosce il gestore scelto e cambia percorso, numero di passi, testi, icone e tempi di attesa.</p>
+
+      <div class="compare">
+        <!-- Poste ID -->
+        <div class="reveal">
+          <div class="col-label"><h3>Poste ID</h3><span>7 passi in totale</span></div>
+          <div class="browser" aria-label="Schermata Poste ID con la guida al passo 6">
+            <div class="bar"><i></i><i></i><i></i><em class="url">posteid · accesso (sito demo)</em></div>
+            <div class="page">
+              <div class="page-head poste"><span class="logo-dot">P</span>Poste ID</div>
+              <div class="page-body">
+                <h4>Autorizza l'accesso dall'app</h4>
+                <p class="sub">Abbiamo inviato una richiesta all'app sul tuo telefono.</p>
+                <div class="push"><b>📱 PosteID</b>Nuova richiesta di accesso SPID. Tocca per autorizzare.</div>
+              </div>
+              <div class="ov">
+                <div class="head">
+                  <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><rect x="13" y="4" width="22" height="40" rx="4"/><path d="M21 38h6"/><path d="M36 14c3 2 5 6 5 10s-2 8-5 10" opacity=".6"/></svg>
+                  <p class="prog">Passo 6 di 7</p>
+                </div>
+                <h5>Guarda il tuo telefono.</h5>
+                <p>Sul telefono arriva un messaggio dall'app Poste ID.</p>
+                <p>Guarda lo schermo del telefono.</p>
+                <button class="done" type="button" tabindex="-1">Ho fatto questo passaggio</button>
+              </div>
+            </div>
+          </div>
+          <div class="path" aria-label="Percorso Poste ID">
+            <span class="same">Entra con SPID</span><span class="same">Scegli gestore</span><span class="own">Nome utente</span><span class="own">Password</span><span class="own">Accedi</span><span class="own now">Notifica sull'app</span><span class="own">Impronta o viso</span>
+          </div>
+        </div>
+
+        <!-- Sielte ID -->
+        <div class="reveal">
+          <div class="col-label"><h3>Sielte ID</h3><span>9 passi in totale</span></div>
+          <div class="browser" aria-label="Schermata Sielte ID con la guida al passo 6">
+            <div class="bar"><i></i><i></i><i></i><em class="url">sielteid · accesso (sito demo)</em></div>
+            <div class="page">
+              <div class="page-head sielte"><span class="logo-dot">S</span>Sielte ID</div>
+              <div class="page-body">
+                <h4>Inquadra il QR code</h4>
+                <p class="sub">Usa la fotocamera dentro l'app Sielte ID.</p>
+                <div class="qr-box"><svg id="qr" viewBox="0 0 25 25" shape-rendering="crispEdges" aria-hidden="true"></svg></div>
+              </div>
+              <div class="ov">
+                <div class="head">
+                  <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 16V8a2 2 0 0 1 2-2h8M32 6h8a2 2 0 0 1 2 2v8M42 32v8a2 2 0 0 1-2 2h-8M16 42H8a2 2 0 0 1-2-2v-8"/><rect x="15" y="15" width="18" height="18" rx="2"/><path d="M6 24h36" opacity=".6"/></svg>
+                  <p class="prog">Passo 6 di 9</p>
+                </div>
+                <h5>Inquadra il codice con la fotocamera dell'app.</h5>
+                <p>Apri l'app Sielte ID sul telefono.</p>
+                <p>Inquadra il codice a quadretti con la fotocamera dell'app.</p>
+                <button class="done" type="button" tabindex="-1">Ho fatto questo passaggio</button>
+              </div>
+            </div>
+          </div>
+          <div class="path" aria-label="Percorso Sielte ID">
+            <span class="same">Entra con SPID</span><span class="same">Scegli gestore</span><span class="own">Nome utente</span><span class="own">Password</span><span class="own">Accedi</span><span class="own now">QR code</span><span class="own">Codice sul telefono</span><span class="own">Scrivi il codice</span><span class="own">Conferma</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend-path reveal" aria-hidden="true">
+        <span class="l-same"><i></i>Passo comune a tutti</span>
+        <span class="l-own"><i></i>Passo specifico del gestore</span>
+        <span class="l-now"><i></i>Passo mostrato nella schermata</span>
+      </div>
+
+      <table class="diff-table reveal">
+        <thead><tr><th>Cosa cambia</th><th>Poste ID</th><th>Sielte ID</th></tr></thead>
+        <tbody>
+          <tr><th>Conferma sul telefono</th><td>Notifica nell'app, poi impronta o viso</td><td>QR code da inquadrare, poi codice da leggere e scrivere</td></tr>
+          <tr><th>Lunghezza del percorso</th><td>7 passi</td><td>9 passi</td></tr>
+          <tr><th>Pazienza prima di aiutare</th><td>2 minuti sulla notifica</td><td>1 minuto e 50 secondi sul QR code</td></tr>
+          <tr><th>Aiuto se si blocca</th><td>"Non vedi nessun messaggio? Apri l'app Poste ID sul telefono."</td><td>"Non trovi la fotocamera nell'app? Tocca l'icona del quadrato dentro l'app Sielte ID."</td></tr>
+          <tr><th>Parole usate</th><td>Il nome del gestore compare in ogni istruzione: "nome utente di Poste ID"</td><td>"nome utente di Sielte ID", "email che hai ricevuto da Sielte ID"</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4 ─ Rilevamento del blocco ──────────────────────────────── -->
+  <section class="dark" id="blocco">
+    <div class="wrap">
+      <p class="eyebrow reveal">Rilevamento del blocco</p>
+      <h2 class="h2 reveal">Si accorge quando sei fermo. E ti dà un consiglio per quel passo.</h2>
+      <p class="lead reveal">Ogni passo ha un tempo normale. Se l'utente lo supera, non compare un generico "Serve aiuto?": compare un consiglio semplice che risponde al dubbio più probabile in quel punto, e l'elemento da usare si illumina.</p>
+
+      <div class="ba">
+        <div class="reveal">
+          <span class="tag before">Prima · da 0 a 2 minuti</span>
+          <div class="browser">
+            <div class="bar"><i></i><i></i><i></i><em class="url">posteid · accesso (sito demo)</em></div>
+            <div class="page">
+              <div class="page-head poste"><span class="logo-dot">P</span>Poste ID</div>
+              <div class="page-body">
+                <h4>Autorizza l'accesso dall'app</h4>
+                <p class="sub">Abbiamo inviato una richiesta all'app sul tuo telefono.</p>
+                <div class="push"><b>📱 PosteID</b>Nuova richiesta di accesso SPID. Tocca per autorizzare.</div>
+              </div>
+              <div class="ov">
+                <div class="head">
+                  <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><rect x="13" y="4" width="22" height="40" rx="4"/><path d="M21 38h6"/></svg>
+                  <p class="prog">Passo 6 di 7</p>
+                </div>
+                <h5>Guarda il tuo telefono.</h5>
+                <p>Sul telefono arriva un messaggio dall'app Poste ID.</p>
+                <p>Guarda lo schermo del telefono.</p>
+                <button class="done" type="button" tabindex="-1">Ho fatto questo passaggio</button>
+              </div>
+            </div>
+          </div>
+          <p class="cap">La guida spiega il passo. L'utente guarda lo schermo, ma non succede niente.</p>
+        </div>
+
+        <div class="arrow reveal" aria-hidden="true"><b>&gt;</b><span>oltre il tempo normale del passo</span></div>
+
+        <div class="reveal">
+          <span class="tag after">Dopo · oltre 2 minuti</span>
+          <div class="browser">
+            <div class="bar"><i></i><i></i><i></i><em class="url">posteid · accesso (sito demo)</em></div>
+            <div class="page">
+              <div class="page-head poste"><span class="logo-dot">P</span>Poste ID</div>
+              <div class="page-body">
+                <h4>Autorizza l'accesso dall'app</h4>
+                <p class="sub">Abbiamo inviato una richiesta all'app sul tuo telefono.</p>
+                <div class="push"><span class="ring"></span><b>📱 PosteID</b>Nuova richiesta di accesso SPID. Tocca per autorizzare.</div>
+              </div>
+              <div class="ov">
+                <div class="head">
+                  <svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><rect x="13" y="4" width="22" height="40" rx="4"/><path d="M21 38h6"/></svg>
+                  <p class="prog">Passo 6 di 7</p>
+                </div>
+                <h5>Guarda il tuo telefono.</h5>
+                <p>Sul telefono arriva un messaggio dall'app Poste ID.</p>
+                <div class="hint">
+                  <p class="lbl">Un consiglio per te</p>
+                  <p>Non vedi nessun messaggio?</p>
+                  <p>Apri l'app Poste ID sul telefono.</p>
+                </div>
+                <button class="done" type="button" tabindex="-1">Ho fatto questo passaggio</button>
+              </div>
+            </div>
+          </div>
+          <p class="cap">Compare il consiglio mirato e la notifica viene evidenziata da un anello giallo pulsante.</p>
+        </div>
+      </div>
+
+      <div class="timeline reveal" aria-label="Cronologia del passo">
+        <div class="track"></div><div class="fill"></div>
+        <span class="tick" style="left:0">0:00 · passo mostrato</span>
+        <span class="tick" style="left:38%">l'utente aspetta</span>
+        <span class="tick hot" style="left:72%">2:00 · consiglio + evidenziazione</span>
+        <span class="tick" style="left:100%">passo fatto</span>
+      </div>
+
+      <div class="rules reveal">
+        <div><b>Un tempo per ogni passo</b>Scrivere la password richiede meno pazienza che aspettare una notifica: ogni passo ha la sua soglia.</div>
+        <div><b>Riprende da dove eri</b>Se la pagina si ricarica, il tempo già passato sul passo non si azzera.</div>
+        <div><b>Contato una volta</b>Ogni blocco si conta una sola volta per passo e per sessione, così la misura resta onesta.</div>
+        <div><b>Mai senza via d'uscita</b>Il pulsante "Ho fatto questo passaggio" permette sempre di andare avanti.</div>
+      </div>
+
+      <div class="hint-wall reveal">
+        <figure><figcaption>Scelta del gestore</figcaption><p>Non trovi il tuo gestore nell'elenco? Scorri l'elenco verso il basso con un dito.</p></figure>
+        <figure><figcaption>Poste ID · impronta</figcaption><p>L'impronta non funziona? Tocca Usa il codice dentro l'app Poste ID.</p></figure>
+        <figure><figcaption>Sielte ID · codice</figcaption><p>Non vedi il codice? Guarda i messaggi SMS sul telefono.</p></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 ─ Learning Outcome Note ───────────────────────────────── -->
+  <section id="risultati">
+    <div class="wrap">
+      <p class="eyebrow reveal">Learning Outcome Note</p>
+      <h2 class="h2 reveal">La prossima volta, ce la fa da solo.</h2>
+      <p class="lead reveal">L'obiettivo non è fare il login al posto dell'utente, ma fargli imparare il percorso. Per questo misuriamo quanto aiuto gli serve, sessione dopo sessione.</p>
+
+      <div class="outcomes reveal">
+        <div><b>Riconosce il suo gestore</b><p>Sa qual è e dove sceglierlo nell'elenco.</p></div>
+        <div><b>Sa cosa aspettarsi</b><p>Notifica, QR code o codice: sa cosa arriva sul telefono.</p></div>
+        <div><b>Capisce che aspettare è normale</b><p>Un'attesa non è un errore.</p></div>
+        <div><b>Ha meno paura di sbagliare</b><p>C'è sempre un'indicazione su cosa fare dopo.</p></div>
+      </div>
+
+      <div class="measure">
+        <div class="reveal">
+          <h3>Come lo misuriamo</h3>
+          <p class="lead">Il popup dell'estensione, "I tuoi progressi", confronta la <strong>prima</strong> sessione completata con l'<strong>ultima</strong> su quattro indicatori, con un segnale semplice: migliorato, stabile o aumentato.</p>
+          <div class="popup" style="margin-top:28px" role="img" aria-label="Popup I tuoi progressi: 3 sessioni completate; tempo da 6 min 40 a 3 min 10; blocchi da 3 a 0; passi fatti da solo da 57% a 100%">
+            <header><div class="plogo">🧭</div><div><h4>I tuoi progressi</h4><p>SPID Helper</p></div></header>
+            <div class="grid">
+              <div class="pcard"><span class="i">🏆</span><span class="l">Sessioni completate</span><span class="v">3</span><span class="s">sessioni portate a termine</span></div>
+              <div class="pcard"><span class="i">⏱</span><span class="l">Tempo per sessione</span><span class="v">3 min 10</span><span class="s">Prima: 6 min 40 → Ora: 3 min 10 <span class="trend">↗ migliorato</span></span></div>
+              <div class="pcard"><span class="i">🛑</span><span class="l">Blocchi rilevati</span><span class="v">0</span><span class="s">Prima: 3 → Ora: 0 <span class="trend">↗ migliorato</span></span></div>
+              <div class="pcard"><span class="i">✅</span><span class="l">Passi fatti da solo</span><span class="v">76%</span><span class="s">Prima: 57% → Ora: 100% <span class="trend">↗ migliorato</span></span></div>
+            </div>
+            <footer><b>Accenture</b><span>Dati solo sul tuo dispositivo</span></footer>
+          </div>
+          <p class="note">Valori di esempio per un utente Poste ID dopo tre sessioni.</p>
+        </div>
+
+        <div class="reveal">
+          <div class="chart-card">
+            <h4>Passi fatti da solo, sessione dopo sessione</h4>
+            <p class="csub">Quota di passi completati senza bisogno del consiglio · utente Poste ID, 7 passi · dati di esempio</p>
+            <div class="chart" id="chart">
+              <svg viewBox="0 0 560 260" role="img" aria-labelledby="chart-desc">
+                <desc id="chart-desc">Grafico a colonne: sessione 1, 57 per cento; sessione 2, 71 per cento; sessione 3, 100 per cento.</desc>
+              </svg>
+              <div class="tip" id="tip"></div>
+            </div>
+            <details class="table-view">
+              <summary>Mostra i dati in tabella</summary>
+              <table>
+                <thead><tr><th>Sessione</th><th>Tempo</th><th>Blocchi</th><th>Passi fatti da solo</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td>6 min 40</td><td>3</td><td>4 di 7 (57%)</td></tr>
+                  <tr><td>2</td><td>4 min 55</td><td>2</td><td>5 di 7 (71%)</td></tr>
+                  <tr><td>3</td><td>3 min 10</td><td>0</td><td>7 di 7 (100%)</td></tr>
+                </tbody>
+              </table>
+            </details>
+          </div>
+
+          <div class="outcomes" style="grid-template-columns:1fr 1fr;margin-top:32px">
+            <div><b>Tempo per sessione</b><p>Quanto dura il login dall'inizio alla fine. Deve scendere.</p></div>
+            <div><b>Blocchi rilevati</b><p>In quanti passi è servito il consiglio. Deve scendere.</p></div>
+            <div><b>Passi fatti da solo</b><p>Passi completati senza consiglio. Deve salire.</p></div>
+            <div><b>Sessioni completate</b><p>Login arrivati fino al Cassetto Fiscale. Le sessioni abbandonate non entrano nel confronto.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="verify">
+        <h3 class="reveal">Come lo verifichiamo</h3>
+        <div class="steps-v reveal">
+          <article><h4>Stesso percorso, stesso risultato</h4><p>La guida segue regole fisse, senza intelligenza artificiale durante l'uso. A parità di azioni mostra sempre gli stessi passi, gli stessi tempi e gli stessi consigli: la demo è ripetibile da chiunque.</p></article>
+          <article><h4>Prova su più sessioni</h4><p>Sul sito demo facciamo almeno tre accessi completi per ogni gestore. Nella prima sessione restiamo fermi oltre il tempo normale su alcuni passi; nelle successive no. Il popup deve segnare "migliorato".</p></article>
+          <article><h4>Una misura che non si gonfia</h4><p>Un blocco si conta una sola volta per passo. Una sessione lasciata a metà, dopo 30 minuti di inattività o ricominciando dalla home, viene esclusa dal confronto.</p></article>
+          <article><h4>Ogni gestore ha la sua guida</h4><p>Controlliamo che Poste ID mostri 7 passi e Sielte ID 9, ciascuno con i suoi testi e i suoi consigli.</p></article>
+          <article><h4>Testi davvero semplici</h4><p>Ogni testo viene controllato con le regole Easy Read: una istruzione per frase, frasi brevi, nessun gergo.</p></article>
+          <article><h4>Dati solo sul dispositivo</h4><p>I progressi restano sul computer dell'utente. Quello che scrive nei campi, come nome utente e password, non viene mai salvato.</p></article>
+        </div>
+
+        <div class="success reveal">
+          <b>&gt;</b>
+          <p>Il miglioramento è dimostrato quando, sessione dopo sessione, <strong>i blocchi scendono</strong>, <strong>i passi fatti da solo salgono</strong> e <strong>il login dura meno</strong>. È il segnale che l'utente ha imparato il percorso.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span class="wordmark">accen<span class="gt" aria-hidden="true">&gt;</span>ture</span>
+    <span>SPID Helper · Hagenthon, Tema 03 "Educazione Digitale Inclusiva" · Sito demo fittizio, nessun dato reale.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // QR code decorativo: pattern pseudo-casuale deterministico con i tre riquadri di posizione.
+  var qr = document.getElementById("qr");
+  if (qr) {
+    var n = 25, seed = 7, out = '<rect width="25" height="25" fill="#fff"/>';
+    function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+    function finder(x, y) {
+      return '<rect x="' + x + '" y="' + y + '" width="7" height="7" fill="#17324d"/>' +
+             '<rect x="' + (x + 1) + '" y="' + (y + 1) + '" width="5" height="5" fill="#fff"/>' +
+             '<rect x="' + (x + 2) + '" y="' + (y + 2) + '" width="3" height="3" fill="#17324d"/>';
+    }
+    function inFinder(x, y) { return (x < 8 && y < 8) || (x > n - 9 && y < 8) || (x < 8 && y > n - 9); }
+    for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) {
+      if (!inFinder(x, y) && rnd() > 0.52) out += '<rect x="' + x + '" y="' + y + '" width="1" height="1" fill="#17324d"/>';
+    }
+    qr.innerHTML = out + finder(0, 0) + finder(n - 7, 0) + finder(0, n - 7);
+  }
+
+  // Grafico a colonne, serie singola.
+  var data = [
+    { s: "Sessione 1", v: 57, d: "4 di 7 passi da solo · 3 blocchi · 6 min 40" },
+    { s: "Sessione 2", v: 71, d: "5 di 7 passi da solo · 2 blocchi · 4 min 55" },
+    { s: "Sessione 3", v: 100, d: "7 di 7 passi da solo · 0 blocchi · 3 min 10" }
+  ];
+  var svg = document.querySelector("#chart svg"), tip = document.getElementById("tip");
+  if (svg) {
+    var W = 560, H = 260, L = 40, R = 10, T = 24, B = 34, ph = H - T - B, pw = W - L - R;
+    var g = "";
+    [0, 25, 50, 75, 100].forEach(function (t) {
+      var yy = T + ph - (t / 100) * ph;
+      g += '<line class="grid-l" x1="' + L + '" x2="' + (W - R) + '" y1="' + yy + '" y2="' + yy + '"/>' +
+           '<text class="axis-t" x="' + (L - 8) + '" y="' + (yy + 4) + '" text-anchor="end">' + t + '%</text>';
+    });
+    var band = pw / data.length, bw = 24, r = 4;
+    data.forEach(function (d, i) {
+      var cx = L + band * i + band / 2, h = (d.v / 100) * ph, x = cx - bw / 2, y0 = T + ph, y1 = y0 - h;
+      var path = "M" + x + "," + y0 + "V" + (y1 + r) + "Q" + x + "," + y1 + " " + (x + r) + "," + y1 +
+                 "H" + (x + bw - r) + "Q" + (x + bw) + "," + y1 + " " + (x + bw) + "," + (y1 + r) + "V" + y0 + "Z";
+      g += '<rect class="hit" data-i="' + i + '" x="' + (cx - band / 2 + 6) + '" y="' + T + '" width="' + (band - 12) + '" height="' + ph + '" tabindex="0" aria-label="' + d.s + ': ' + d.v + '%"/>' +
+           '<path class="bar" d="' + path + '"/>' +
+           '<text class="val-t" x="' + cx + '" y="' + (y1 - 8) + '" text-anchor="middle">' + d.v + '%</text>' +
+           '<text class="axis-t" x="' + cx + '" y="' + (H - 10) + '" text-anchor="middle">' + d.s + '</text>';
+    });
+    svg.insertAdjacentHTML("beforeend", g);
+
+    function show(e) {
+      var i = +e.target.getAttribute("data-i"), d = data[i];
+      var box = svg.getBoundingClientRect(), host = svg.parentNode.getBoundingClientRect();
+      var sx = box.width / W;
+      var cx = (L + band * i + band / 2) * sx + (box.left - host.left);
+      var cy = (T + ph - (d.v / 100) * ph) * sx + (box.top - host.top) - 30;
+      tip.innerHTML = "<b>" + d.s + " · " + d.v + "%</b><br>" + d.d;
+      tip.style.left = cx + "px"; tip.style.top = cy + "px";
+      tip.classList.add("on");
+    }
+    function hide() { tip.classList.remove("on"); }
+    svg.querySelectorAll(".hit").forEach(function (h) {
+      h.addEventListener("mouseenter", show); h.addEventListener("focus", show);
+      h.addEventListener("mouseleave", hide); h.addEventListener("blur", hide);
+    });
+  }
+
+  // Comparsa allo scroll.
+  var els = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+    }, { threshold: 0.12 });
+    els.forEach(function (el) { io.observe(el); });
+  } else {
+    els.forEach(function (el) { el.classList.add("in"); });
+  }
+
+  // Barra di avanzamento e voce di menu attiva.
+  var bar = document.getElementById("progress");
+  var links = Array.prototype.slice.call(document.querySelectorAll(".topbar nav a"));
+  var secs = links.map(function (a) { return document.querySelector(a.getAttribute("href")); });
+  function onScroll() {
+    var max = document.documentElement.scrollHeight - innerHeight;
+    bar.style.width = (max > 0 ? (scrollY / max) * 100 : 0) + "%";
+    var cur = 0;
+    secs.forEach(function (s, i) { if (s && s.getBoundingClientRect().top < innerHeight * 0.4) cur = i; });
+    links.forEach(function (a, i) { a.classList.toggle("active", i === cur); });
+  }
+  addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+</body>
+</html>

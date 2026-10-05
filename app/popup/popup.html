@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPID Helper — I tuoi progressi</title>
+  <style>
+    :root {
+      --bg:            #0a0a14;
+      --surface:       #111126;
+      --surface-hover: #181835;
+      --purple:        #A100FF;
+      --purple-dim:    rgba(161, 0, 255, 0.12);
+      --purple-border: rgba(161, 0, 255, 0.28);
+      --text:          #ffffff;
+      --muted:         #8888aa;
+      --good:          #00e5a0;
+      --bad:           #ff5566;
+      --neutral-c:     #9999bb;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      width: 380px;
+      min-height: 160px;
+    }
+
+    /* ── header ──────────────────────────────────────────────────────── */
+    header {
+      background: linear-gradient(135deg, #0e0026 0%, #190040 100%);
+      border-bottom: 2px solid var(--purple);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 36px;
+      height: 36px;
+      background: var(--purple);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      box-shadow: 0 0 16px rgba(161, 0, 255, 0.5);
+    }
+
+    .header-text h1 {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      line-height: 1.2;
+    }
+
+    .header-text p {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 2px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ── body area ───────────────────────────────────────────────────── */
+    #content {
+      padding: 12px;
+    }
+
+    /* ── grid of cards ───────────────────────────────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--purple-border);
+      border-radius: 10px;
+      padding: 13px 12px 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      cursor: default;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .card:hover {
+      background: var(--surface-hover);
+      border-color: rgba(161, 0, 255, 0.5);
+    }
+
+    .card-icon {
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .card-label {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      margin-top: 2px;
+    }
+
+    .card-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--purple);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .card-sub {
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-top: 1px;
+    }
+
+    /* ── trend badges ────────────────────────────────────────────────── */
+    .trend {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 20px;
+      letter-spacing: 0.04em;
+      vertical-align: middle;
+    }
+
+    .trend-good    { background: rgba(0, 229, 160, 0.15); color: var(--good); }
+    .trend-bad     { background: rgba(255, 85, 102, 0.15); color: var(--bad); }
+    .trend-neutral { background: rgba(153, 153, 187, 0.12); color: var(--neutral-c); }
+
+    /* ── in-progress banner ──────────────────────────────────────────── */
+    .banner {
+      font-size: 10px;
+      color: var(--purple);
+      background: var(--purple-dim);
+      border: 1px solid var(--purple-border);
+      border-radius: 6px;
+      padding: 5px 10px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    /* ── empty state ─────────────────────────────────────────────────── */
+    .empty {
+      text-align: center;
+      padding: 28px 16px 24px;
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .empty p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 220px;
+      margin: 0 auto 5px;
+    }
+
+    /* ── error ───────────────────────────────────────────────────────── */
+    .error-msg {
+      font-size: 12px;
+      color: var(--bad);
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    /* ── footer ──────────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 7px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-brand {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--purple);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .footer-note {
+      font-size: 9px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo" role="img" aria-label="SPID Helper">🧭</div>
+    <div class="header-text">
+      <h1>I tuoi progressi</h1>
+      <p>SPID Helper</p>
+    </div>
+  </header>
+
+  <main id="content" aria-live="polite">
+    <div class="empty">
+      <div class="empty-icon">⏳</div>
+      <p>Caricamento dati…</p>
+    </div>
+  </main>
+
+  <footer>
+    <span class="footer-brand">Accenture</span>
+    <span class="footer-note">Dati solo sul tuo dispositivo</span>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>
